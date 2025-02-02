@@ -18,7 +18,7 @@ A comprehensive system for documenting code changes with business logic impact a
 - npm >= 7.0.0
 
 ```bash
-npm install -g luki-docs
+npm install
 ```
 
 > **Note**: This package uses ES Modules. Make sure your project's package.json has `"type": "module"` or use the `.mjs` extension for your files.
@@ -71,8 +71,7 @@ analyze-repo --url https://github.com/user/repo --skip-doc
 
 1. Install dependencies:
    ```bash
-   npm install @typescript-eslint/typescript-estree @typescript-eslint/types \
-               @octokit/rest husky axios
+   npm install
    ```
 
 2. Configure environment for Confluence (if using):
@@ -81,13 +80,6 @@ analyze-repo --url https://github.com/user/repo --skip-doc
    echo "CONFLUENCE_BASE_URL=https://your-domain.atlassian.net/wiki
    CONFLUENCE_TOKEN=your-api-token
    CONFLUENCE_SPACE_KEY=your-space-key" > .env
-   ```
-
-3. Set up Git hooks:
-   ```bash
-   npx husky init
-   npm pkg set scripts.prepare="husky"
-   npm run prepare
    ```
 
 #### B. Choose Documentation Format

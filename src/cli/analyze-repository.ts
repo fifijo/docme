@@ -81,8 +81,16 @@ async function main() {
     console.log("=================");
     console.log(`Total changes analyzed: ${analyzedChanges.length}`);
 
-    const businessLogicChanges = analyzedChanges.filter(
-      (change) => change.businessLogicImpacted
+    interface Change {
+      filePath: string;
+      changeType: string;
+      description: string;
+      author: string;
+      businessLogicImpacted: boolean;
+    }
+
+    const businessLogicChanges: Change[] = analyzedChanges.filter(
+      (change: Change) => change.businessLogicImpacted
     );
     console.log(`Business logic changes detected: ${businessLogicChanges.length}`);
 

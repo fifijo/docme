@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import { CodeChange } from "@/types/code-changes";
+import { CodeChange } from "../../types/code-changes.js";
 import { execSync } from "child_process";
 
 export class ChangeDetectionService {

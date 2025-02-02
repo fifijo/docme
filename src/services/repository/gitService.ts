@@ -1,8 +1,8 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import { CodeChange } from "@/types/code-changes";
-import { ChangeDetectionService } from "../changeDetection/detector";
+import { CodeChange } from "../../types/code-changes.js";
+import { ChangeDetectionService } from "../changeDetection/detector.js";
 
 export interface RepositoryConfig {
   url: string;

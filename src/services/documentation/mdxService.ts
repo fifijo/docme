@@ -1,4 +1,4 @@
-import { CodeChange } from "@/types/code-changes";
+import { CodeChange } from "../../types/code-changes.js";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -48,30 +48,27 @@ tags: [
     );
     const otherChanges = changes.filter((change) => !change.businessLogicImpacted);
 
-    return `
-import { CodeBlock } from '@components/CodeBlock';
-import { ChangeList } from '@components/ChangeList';
-import { Alert } from '@components/Alert';
-
-# Code Changes Documentation
+    return `# Code Changes Documentation
 
 Documentation generated on ${new Date().toLocaleDateString()} for recent code changes.
 
 ## Summary
 
-<Alert type="info">
-  Total changes detected: ${changes.length}
-  Business logic changes: ${businessLogicChanges.length}
-</Alert>
+:::info
+Total changes detected: ${changes.length}
+Business logic changes: ${businessLogicChanges.length}
+:::
 
 ## Business Logic Changes
 
 ${
   businessLogicChanges.length > 0
-    ? `<ChangeList
-  changes={${JSON.stringify(businessLogicChanges, null, 2)}}
-  type="business"
-/>`
+    ? businessLogicChanges
+        .map(
+          (change) =>
+            `- **${change.filePath}** - ${change.description}`
+        )
+        .join("\n")
     : "No business logic changes detected."
 }
 
@@ -79,10 +76,12 @@ ${
 
 ${
   otherChanges.length > 0
-    ? `<ChangeList
-  changes={${JSON.stringify(otherChanges, null, 2)}}
-  type="other"
-/>`
+    ? otherChanges
+        .map(
+          (change) =>
+            `- **${change.filePath}** - ${change.description}`
+        )
+        .join("\n")
     : "No other changes detected."
 }
 
@@ -98,54 +97,12 @@ ${changes
 * Impact: ${change.businessLogicImpacted ? "Business Logic" : "Other"}
 * Description: ${change.description}
 
-<CodeBlock language="diff">
-{\`${change.diff.replace(/`/g, "\\`")}\`}
-</CodeBlock>
+\`\`\`diff
+${change.diff}
+\`\`\`
 `
   )
   .join("\n")}
-
-## Components
-
-<details>
-<summary>Component Import Information</summary>
-
-This documentation uses the following custom components:
-- \`CodeBlock\`: For displaying code diffs
-- \`ChangeList\`: For displaying lists of changes
-- \`Alert\`: For showing status information
-
-Ensure these components are available in your MDX setup.
-
-Example component implementations:
-
-\`\`\`tsx
-// @components/CodeBlock.tsx
-export const CodeBlock = ({ children, language }) => (
-  <pre className={\`language-\${language}\`}>
-    <code>{children}</code>
-  </pre>
-);
-
-// @components/ChangeList.tsx
-export const ChangeList = ({ changes, type }) => (
-  <ul className={\`changes-list \${type}\`}>
-    {changes.map(change => (
-      <li key={change.filePath}>
-        {change.filePath} - {change.description}
-      </li>
-    ))}
-  </ul>
-);
-
-// @components/Alert.tsx
-export const Alert = ({ children, type }) => (
-  <div className={\`alert alert-\${type}\`}>
-    {children}
-  </div>
-);
-\`\`\`
-</details>
 `;
   }
 
@@ -188,19 +145,19 @@ export const Alert = ({ children, type }) => (
   }
 
   private generateIndexFileContent(): string {
-    return `---
-title: "Code Changes Documentation Index"
----
-
-import { DocList } from '@components/DocList';
-
-# Code Changes Documentation
+    return `# Code Changes Documentation
 
 This section contains automatically generated documentation for code changes, with a focus on business logic modifications.
 
 ## Recent Changes
 
-<DocList />
+${fs
+  .readdirSync(this.config.outputDir)
+  .filter((file) => file.endsWith(".mdx") && file !== "index.mdx")
+  .sort()
+  .reverse()
+  .map((file) => `- [${file.replace(/-/g, " ").replace(".mdx", "")}](./${file})`)
+  .join("\n")}
 `;
   }
 
