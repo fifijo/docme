@@ -10,7 +10,6 @@
   "scripts": {
     "build": "tsc",
     "build-hooks": "tsc -p tsconfig.hooks.json",
-    "prepare": "husky install",
     "analyze": "ts-node --esm src/cli/analyze-repository.ts"
   },
   "dependencies": {
